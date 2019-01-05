@@ -1,15 +1,16 @@
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <omp.h>
 
-#include "type.h"
 #include "clm.h"
+#include "fm.h"
 #include "lbfgs.h"
 #include "model.h"
 #include "plm_glasso.h"
 #include "sequence.h"
+#include "type.h"
 #include "util.h"
 
 void usage();
@@ -29,7 +30,10 @@ int main(int argc, char** argv) {
   double glasso_rho = 0.5;
   double glasso_lambda = 0.1;
   int glasso_iter = 20;
-  while ((opt = getopt(argc, argv, "c:g:r:a:t:l:s:i:")) >= 0) switch (opt) {
+
+  int rank = 64;
+  double init_factor = 0.1;
+  while ((opt = getopt(argc, argv, "c:g:r:a:t:l:s:i:k:f:")) >= 0) switch (opt) {
       case 'c':
         glasso_lambda = atof(optarg);
         break;
@@ -54,6 +58,11 @@ int main(int argc, char** argv) {
       case 'i':
         max_iter = atoi(optarg);
         break;
+      case 'k':
+        rank = atoi(optarg);
+        break;
+      case 'f':
+        init_factor = atof(optarg);
       default:
         break;
     }
@@ -82,6 +91,9 @@ int main(int argc, char** argv) {
   model->glasso_rho = glasso_rho;
   model->glasso_iter = glasso_iter;
   model->tolerance_ret = 1e-3;
+
+  model->rank = rank;
+  model->init_factor = init_factor;
 
   // calcuate sequence weights
   model->w = (double*)malloc(sizeof(double) * nrow);
@@ -126,10 +138,15 @@ int main(int argc, char** argv) {
   omp_set_num_threads(threads_num);
   // printf("optimiztion\n");
   if (alg_type == 1) {
-    ret =
-        lbfgs(nvar, model->x, &fx, evaluate_clm, progress_clm, model, &param);
+    ret = lbfgs(nvar, model->x, &fx, evaluate_clm, progress_clm, model, &param);
   } else if (alg_type == 2) {
     ret = plm_glasso(model);
+  } else if (alg_type == 3) {
+    model->g = g;
+    ret = solve_fm_SGD(model);
+  } else {
+    usage();
+    exit(-1);
   }
   // printf(">lbfgs exit code = %d\n", ret);
 
@@ -167,5 +184,7 @@ void usage() {
   printf("-r\t: the rho used in glasso (default = 0.5)\n");
   printf("-c\t: the lambda used in glasso (default = 0.1)\n");
   printf("-k\t: the dimension of latent factor (default = 64; only for FM)\n");
+  printf("-f\t: init factor (default 0.1; only for FM)\n");
+
   return;
 }

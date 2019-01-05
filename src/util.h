@@ -25,4 +25,9 @@ void out_raw_param(char* out_path, int ncol, double* x);
 
 int compare(const void* a, const void* b);
 
+void v_minus(double* left, double* right, double* res, int len);
+void v_plus(double* left, double* right, double* res, int len);
+double v_dot(double* left, double* right, int len);
+void v_multiply(double w, double* left, double* res, int len);
+
 #endif

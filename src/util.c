@@ -212,3 +212,27 @@ int compare(const void* a, const void* b) {
   if (a1->val == b1->val) return 0;
   if (a1->val > b1->val) return -1;
 }
+
+void v_minus(double* left, double* right, double* res, int len) {
+  for (int k = 0; k < len; k++) {
+    res[k] = left[k] - right[k];
+  }
+}
+void v_plus(double* left, double* right, double* res, int len) {
+  for (int k = 0; k < len; k++) {
+    res[k] = left[k] + right[k];
+  }
+}
+double v_dot(double* left, double* right, int len) {
+  double res = 0.0;
+  for (int k = 0; k < len; k++) {
+    res += left[k] * right[k];
+  }
+  return res;
+}
+
+void v_multiply(double w, double* left, double* res, int len) {
+  for (int k = 0; k < len; k++) {
+    res[k] = w * left[k];
+  }
+}

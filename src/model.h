@@ -1,8 +1,8 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct _model_t {
   unsigned char *msa;
@@ -39,6 +39,12 @@ typedef struct _model_t {
   double tolerance_ret;
   double *glasso_z;
   double *glasso_u;
+
+  // paramters for MRF-FM
+  int rank;
+  double eta;
+  double *g;
+  double init_factor;
 } model_t;
 
 int evaluate_model(model_t *model);

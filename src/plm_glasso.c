@@ -3,8 +3,8 @@
 #include <math.h>
 #include <string.h>
 
-#include "type.h"
 #include "model.h"
+#include "type.h"
 
 int plm_glasso(model_t *m) {
   // set the parameters of
@@ -96,7 +96,7 @@ int plm_glasso(model_t *m) {
 lbfgsfloatval_t evaluate_plm_glasso(void *instance, const lbfgsfloatval_t *x,
                                     lbfgsfloatval_t *g, const int n,
                                     const lbfgsfloatval_t step) {
-  model_t* model = (model_t*) instance;
+  model_t *model = (model_t *)instance;
   unsigned char *msa = model->msa;
   int nrow = model->nrow;
   int ncol = model->ncol;
@@ -225,7 +225,7 @@ int progress_plm_glasso(void *instance, const lbfgsfloatval_t *x,
                         const lbfgsfloatval_t xnorm,
                         const lbfgsfloatval_t gnorm, const lbfgsfloatval_t step,
                         int n, int k, int ls) {
-  model_t* model = (model_t*) instance;
+  model_t *model = (model_t *)instance;
   model->iter = k;
   fprintf(model->flog, "iter= %d  fx= %f xnorm = %f gnorm = %f step= %f ", k,
           fx, xnorm, gnorm, step);

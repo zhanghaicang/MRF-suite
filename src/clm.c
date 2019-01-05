@@ -7,8 +7,8 @@
 #include <string.h>
 
 #include "model.h"
-#include "util.h"
 #include "type.h"
+#include "util.h"
 
 lbfgsfloatval_t evaluate_clm(void *instance, const lbfgsfloatval_t *x,
                              lbfgsfloatval_t *g, const int n,
